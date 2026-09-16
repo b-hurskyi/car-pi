@@ -61,6 +61,29 @@ The visual design is intentionally not the priority during the first milestone.
 
 The purpose is to establish the data flow and architecture that later real telemetry sources can use.
 
+## Local development
+
+Run the backend with Python 3.12 or newer:
+
+```bash
+cd backend
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+uvicorn app.main:app --reload
+```
+
+In another terminal, run the frontend with Node.js 24:
+
+```bash
+nvm use
+cd frontend
+npm install
+npm run dev
+```
+
+Vite proxies `/ws/telemetry` to the backend at `127.0.0.1:8000` during development.
+
 ## Future direction
 
 Possible future integrations include:

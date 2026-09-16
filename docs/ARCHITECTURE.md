@@ -25,9 +25,8 @@ The car computer consists of two primary software components:
                │
         Telemetry Providers
                │
-       ┌───────┼─────────┐
-       │       │         │
-      Mock   Replay     OBD-II
+               │
+              Mock
 ```
 
 The Raspberry Pi will eventually run both the frontend and backend.
@@ -78,32 +77,57 @@ HTTP should be used where real-time streaming is unnecessary.
 
 Vehicle telemetry should not be coupled to a specific hardware implementation.
 
-Conceptually:
+The current provider boundary is:
 
 ```text
 TelemetryProvider
         │
-        ├── MockTelemetryProvider
-        ├── ReplayTelemetryProvider
-        └── ObdTelemetryProvider
+        └── MockTelemetryProvider
 ```
 
-Consumers should operate on normalized telemetry rather than provider-specific data.
+`TelemetryProvider` supplies normalized snapshots without exposing how values are
+produced. `MockTelemetryProvider` is the only current implementation and generates
+changing, coherent demo values for development without hardware. Replay and OBD-II
+providers remain future possibilities rather than implemented components.
 
-For example, the UI should consume:
+Consumers operate on this normalized telemetry contract:
 
 ```json
 {
   "speedKph": 72,
-  "rpm": 2380
+  "rpm": 2380,
+  "gear": "D",
+  "ignition": true,
+  "engineRunning": true
 }
 ```
 
-and should not care whether those values originated from:
+The UI does not care whether those values originated from generated mock values or
+a future provider.
 
-- generated mock values
-- a recorded trip
-- an OBD-II adapter
+## Communication
+
+The backend exposes normalized snapshots at:
+
+```text
+/ws/telemetry
+```
+
+The current end-to-end flow is:
+
+```text
+MockTelemetryProvider
+        ↓
+FastAPI WebSocket
+        ↓
+React telemetry client
+        ↓
+UI
+```
+
+The frontend connects to the same origin. During local development, Vite proxies
+the WebSocket path to the backend; this keeps machine-specific addresses out of
+application code and remains compatible with hosting both components together.
 
 ## Development modes
 
@@ -127,26 +151,6 @@ Uses actual vehicle telemetry sources such as OBD-II.
 
 This mode should initially remain read-only.
 
-## Communication
-
-Initial real-time communication:
-
-```text
-Backend
-   │
-   │ WebSocket
-   ▼
-Frontend
-```
-
-An initial endpoint may eventually look similar to:
-
-```text
-/ws/telemetry
-```
-
-The exact API contract should be defined during implementation rather than treated as fixed by this document.
-
 ## Deployment direction
 
 Development:
@@ -169,19 +173,21 @@ The architecture should avoid requiring Raspberry Pi hardware for normal feature
 
 ## Current milestone
 
-The first implementation should contain only enough functionality to validate:
+The current implementation validates:
 
 ```text
 MockTelemetryProvider
         ↓
-telemetry application layer
+normalized telemetry model
         ↓
 WebSocket
         ↓
 React client
 ```
 
-No persistence or real vehicle hardware is required for this milestone.
+The frontend reports connection state, reconnects with a small increasing delay,
+and keeps the last received snapshot visible during a temporary disconnect. No
+persistence or real vehicle hardware is required for this milestone.
 
 ## Architectural constraints
 

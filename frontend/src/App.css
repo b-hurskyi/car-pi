@@ -11,11 +11,20 @@
 
 .eyebrow {
   margin: 0 0 0.75rem;
-  color: #9fb0c3;
+  color: #f2c14e;
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.eyebrow[data-state="connected"] {
+  color: #84e0a0;
+}
+
+.eyebrow[data-state="disconnected"],
+.eyebrow[data-state="error"] {
+  color: #ff8b7b;
 }
 
 h1 {
@@ -26,7 +35,70 @@ h1 {
 
 .status-text {
   margin: 1rem 0 0;
-  color: #84e0a0;
+  color: #9fb0c3;
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.telemetry {
+  margin-top: 2rem;
+}
+
+.telemetry p {
+  margin: 0;
+}
+
+.speed {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  color: #c7d0d9;
+  font-size: 1.5rem;
+}
+
+.speed strong {
+  color: #f6f7f8;
+  font-size: clamp(4rem, 14vw, 7rem);
+  line-height: 1;
+}
+
+.rpm,
+.gear {
+  color: #c7d0d9;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.rpm {
+  margin-top: 1.25rem !important;
+}
+
+.gear {
+  margin-top: 0.5rem !important;
+}
+
+.vehicle-state {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #39414a;
+}
+
+.vehicle-state div {
+  min-width: 0;
+}
+
+.vehicle-state dt {
+  color: #9fb0c3;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.vehicle-state dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
