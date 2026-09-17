@@ -4,17 +4,28 @@ from pathlib import Path
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
+from app.system_telemetry import (
+    LinuxSystemTelemetryProvider,
+    SystemTelemetryProvider,
+    SystemTelemetrySnapshot,
+)
 from app.telemetry import MockTelemetryProvider, TelemetryProvider
 
 FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 app = FastAPI(title="Car Computer API")
 telemetry_provider: TelemetryProvider = MockTelemetryProvider()
+system_telemetry_provider: SystemTelemetryProvider = LinuxSystemTelemetryProvider()
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/api/system")
+def system_telemetry() -> SystemTelemetrySnapshot:
+    return system_telemetry_provider.snapshot()
 
 
 @app.websocket("/ws/telemetry")

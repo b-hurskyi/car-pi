@@ -23,10 +23,10 @@ The car computer consists of two primary software components:
 │ telemetry / integrations    │
 └──────────────┬──────────────┘
                │
-        Telemetry Providers
-               │
-               │
-              Mock
+          Data Providers
+         ┌─────┴─────┐
+         │           │
+ Vehicle: Mock  System: Linux
 ```
 
 The Raspberry Pi will eventually run both the frontend and backend.
@@ -129,6 +129,28 @@ The frontend connects to the same origin. During local development, Vite proxies
 the WebSocket path to the backend; this keeps machine-specific addresses out of
 application code and remains compatible with hosting both components together.
 
+## System telemetry
+
+System telemetry is separate from vehicle telemetry:
+
+```text
+LinuxSystemTelemetryProvider
+        ↓
+GET /api/system
+        ↓
+React system telemetry client
+        ↓
+System UI
+```
+
+The Linux provider reads CPU counters, memory availability, and uptime from
+`/proc`, and Raspberry Pi CPU temperature from sysfs. Missing or malformed values
+are returned as unavailable rather than preventing the backend from running.
+
+The frontend polls `/api/system` every two seconds. These host metrics change at a
+lower frequency than vehicle telemetry and are independent snapshots, so HTTP
+polling keeps this boundary simpler than another persistent WebSocket connection.
+
 ## Development modes
 
 ### Mock mode
@@ -171,6 +193,7 @@ Raspberry Pi
 └── FastAPI / Uvicorn
     ├── /              built React frontend
     ├── /health        HTTP health endpoint
+    ├── /api/system    system telemetry snapshot
     └── /ws/telemetry  telemetry WebSocket
 ```
 

@@ -82,7 +82,8 @@ npm install
 npm run dev
 ```
 
-Vite proxies `/ws/telemetry` to the backend at `127.0.0.1:8000` during development.
+Vite proxies `/api` and `/ws/telemetry` to the backend at `127.0.0.1:8000`
+during development.
 
 ## Production build and run
 
@@ -109,9 +110,9 @@ pip install -e .
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-Open `http://127.0.0.1:8000` in Chromium. The frontend, `/health`, and
-`/ws/telemetry` all use the same FastAPI origin. Node.js and Vite are not required
-while the built application is running.
+Open `http://127.0.0.1:8000` in Chromium. The frontend, `/health`, `/api/system`,
+and `/ws/telemetry` all use the same FastAPI origin. Node.js and Vite are not
+required while the built application is running.
 
 ## Raspberry Pi boot setup
 
