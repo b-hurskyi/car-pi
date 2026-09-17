@@ -161,13 +161,22 @@ MacBook
 └── Python backend
 ```
 
-Target:
+Production target:
 
 ```text
 Raspberry Pi
-├── React frontend
-└── Python backend
+├── Chromium
+│       │
+│       ▼
+└── FastAPI / Uvicorn
+    ├── /              built React frontend
+    ├── /health        HTTP health endpoint
+    └── /ws/telemetry  telemetry WebSocket
 ```
+
+Vite produces the static frontend build, but it is not part of the production
+runtime. FastAPI serves the build and application endpoints from one origin, so
+the browser does not need a hard-coded device address or cross-origin setup.
 
 The architecture should avoid requiring Raspberry Pi hardware for normal feature development.
 

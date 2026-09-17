@@ -1,8 +1,12 @@
 import asyncio
+from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 
 from app.telemetry import MockTelemetryProvider, TelemetryProvider
+
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 app = FastAPI(title="Car Computer API")
 telemetry_provider: TelemetryProvider = MockTelemetryProvider()
@@ -31,3 +35,13 @@ async def telemetry(websocket: WebSocket) -> None:
                 break
     except WebSocketDisconnect:
         pass
+
+
+def mount_frontend(application: FastAPI, directory: Path) -> None:
+    if directory.is_dir():
+        application.mount(
+            "/", StaticFiles(directory=directory, html=True), name="frontend"
+        )
+
+
+mount_frontend(app, FRONTEND_DIST)

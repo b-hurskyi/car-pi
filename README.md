@@ -61,7 +61,7 @@ The visual design is intentionally not the priority during the first milestone.
 
 The purpose is to establish the data flow and architecture that later real telemetry sources can use.
 
-## Local development
+## Development mode
 
 Run the backend with Python 3.12 or newer:
 
@@ -83,6 +83,35 @@ npm run dev
 ```
 
 Vite proxies `/ws/telemetry` to the backend at `127.0.0.1:8000` during development.
+
+## Production build and run
+
+Build the frontend with Node.js 24 before starting the backend:
+
+```bash
+nvm use
+cd frontend
+npm ci
+npm run build
+```
+
+The generated `frontend/dist` directory is intentionally ignored by Git. FastAPI
+detects that directory when the application starts and serves it at `/` alongside
+the existing HTTP and WebSocket endpoints.
+
+Run the complete application with Python 3.12 or newer:
+
+```bash
+cd ../backend
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000` in Chromium. The frontend, `/health`, and
+`/ws/telemetry` all use the same FastAPI origin. Node.js and Vite are not required
+while the built application is running.
 
 ## Future direction
 
