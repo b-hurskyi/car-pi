@@ -156,7 +156,14 @@ install -Dm644 deploy/autostart/car-computer-kiosk.desktop /home/bohdan/.config/
 ```
 
 Sign out and back in, or reboot, to start the kiosk. The wrapper waits for
-`/health` before launching Chromium with only `--kiosk` and `--no-first-run`.
+`/health` before launching Chromium in kiosk mode. It uses the dedicated profile
+at `/home/bohdan/.local/share/car-computer/chromium-profile` and the Chromium
+`basic` password store so the automatically logged-in session does not prompt to
+unlock the desktop keyring.
+
+The `basic` password store does not provide the desktop keyring's encryption.
+Never use the dedicated kiosk profile to save sensitive browser credentials. The
+launcher does not read or modify the user's normal Chromium profile.
 
 Disable Chromium autostart without changing the repository:
 
