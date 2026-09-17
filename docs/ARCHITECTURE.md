@@ -178,6 +178,11 @@ Vite produces the static frontend build, but it is not part of the production
 runtime. FastAPI serves the build and application endpoints from one origin, so
 the browser does not need a hard-coded device address or cross-origin setup.
 
+On the Raspberry Pi, systemd starts the FastAPI application as the unprivileged
+`bohdan` user and keeps it bound to the local loopback interface. After the
+graphical desktop session starts, an XDG autostart entry waits for the health
+endpoint and then opens the same origin in Chromium kiosk mode.
+
 The architecture should avoid requiring Raspberry Pi hardware for normal feature development.
 
 ## Current milestone

@@ -1,0 +1,17 @@
+[Unit]
+Description=Car Computer FastAPI application
+After=network.target
+
+[Service]
+Type=simple
+User=bohdan
+WorkingDirectory=/home/bohdan/car-computer/backend
+ExecStart=/home/bohdan/car-computer/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

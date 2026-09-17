@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Car Computer Kiosk
+Comment=Open the local car computer interface in Chromium
+TryExec=/home/bohdan/.local/bin/car-computer-kiosk
+Exec=/home/bohdan/.local/bin/car-computer-kiosk
+Terminal=false
+StartupNotify=false
